@@ -49,11 +49,12 @@ const notes = (state = initialState, action) => {
         isSearch: false,
       };
     case 'GET_SEARCH_FULFILLED':
+      console.log(action.payload.data.data);
       return {
         ...state,
         isSearch: false,
         searchKeyword: action.payload.data.search,
-        searchNotes: action.payload.data.data,
+        searchNotes: action.payload.data.data.data,
         totalPage: action.payload.data.totalPage,
         currentPage: action.payload.data.page,
         selectedCategory: action.payload.data.selectedCategory,

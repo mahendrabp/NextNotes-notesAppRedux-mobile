@@ -27,7 +27,7 @@ export const getSearchNotes = (search = '', page = 1, sort = '') => {
   return {
     type: 'GET_SEARCH',
     payload: axios.get(
-      `localhost:8002/api/v1/notes?search=${search}&page=${page}&sort=${sort}`,
+      `http://localhost:8002/api/v1/notes?search=${search}&page=${page}&sort=${sort}`,
     ),
   };
 };

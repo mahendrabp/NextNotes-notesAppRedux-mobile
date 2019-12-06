@@ -25,7 +25,7 @@ import {throttle, debounce} from 'throttle-debounce';
 import {FloatingAction} from 'react-native-floating-action';
 import moment from 'moment';
 import {connect} from 'react-redux';
-import {getNotes, getMoreNotes} from '../redux/action/notes';
+import {getNotes, getMoreNotes, getSearchNotes} from '../redux/action/notes';
 import {getCategory} from '../redux/action/category';
 
 class Home extends Component {
@@ -69,6 +69,14 @@ class Home extends Component {
     search = search == undefined ? '' : search;
     this.props.dispatch(getNotes(search, 1, sort));
   };
+  getSearchData = (search, page) => {
+    search = search == undefined ? '' : search;
+    this.props.dispatch(getSearchNotes(search, page, this.props.notes.sorted));
+  };
+  updateSearch = search => {
+    this.setState({search: search});
+    this.getSearchData(search);
+  };
 
   getCategory = () => {
     this.props.dispatch(getCategory());
@@ -82,9 +90,9 @@ class Home extends Component {
   };
 
   handleLoadMore = sort => {
-    console.log(this.props.notes.currentPage);
-    console.log(this.props.notes.totalPage);
-    console.log(this.props.notes.selectedCategory);
+    // console.log(this.props.notes.currentPage);
+    // console.log(this.props.notes.totalPage);
+    // console.log(this.props.notes.selectedCategory);
     if (this.props.notes.currentPage < this.props.notes.totalPage) {
       //this.state.page=this.state.page + 1;
 
@@ -95,12 +103,6 @@ class Home extends Component {
         this.props.notes.selectedCategory,
       );
     }
-  };
-
-  updateSearch = search => {
-    this.setState({search: search});
-    console.log(search);
-    // this.getSearchData(search);
   };
 
   renderItem = ({item, index}) => (
@@ -122,13 +124,13 @@ class Home extends Component {
           key={item.noteId}
           containerStyle={{
             backgroundColor:
-              item.idCategory == 1
+              item.idCategory == 5
                 ? '#2FC2DF'
-                : item.idCategory == 2
+                : item.idCategory == 6
                 ? '#C0EB6A'
-                : item.idCategory == 3
+                : item.idCategory == 7
                 ? '#FAD06C'
-                : item.idCategory == 4
+                : item.idCategory == 8
                 ? '#FF92A9'
                 : '#D64ED9',
             borderRadius: 8,
@@ -237,7 +239,7 @@ class Home extends Component {
           data={
             this.state.search == ''
               ? this.props.notes.notes
-              : this.props.notes.notes
+              : this.props.notes.searchNotes
           }
           renderItem={this.renderItem}
           keyExtractor={this._keyExtractor}
