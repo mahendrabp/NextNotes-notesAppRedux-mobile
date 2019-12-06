@@ -14,24 +14,25 @@ import {getNotes, addNote} from '../redux/action/notes';
 import {getCategory} from '../redux/action/category';
 
 class Note extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      // header: this.props.navigation.state.params.header,
-      // title: this.props.navigation.state.params.title,
-      // note: this.props.navigation.state.params.note,
-      // categoryId: this.props.navigation.state.params.categoryId || 1,
-      // id: this.props.navigation.state.params.id,
+      header: this.props.navigation.state.params.header,
+      title: this.props.navigation.state.params.title,
+      note: this.props.navigation.state.params.note,
+      categoryId: this.props.navigation.state.params.categoryId || 1,
+      id: this.props.navigation.state.params.id,
     };
   }
 
   static navigationOptions = ({navigation}) => {
-    const {
-      state: {params = {}},
-    } = navigation;
-    console.log(navigation.getParam('saveNote'));
+    console.log(navigation.state.params);
+    // const {
+    //   state: {params = {}},
+    // } = navigation;
+    // console.log(navigation.getParam('saveNote'));
     return {
-      title: params.header || '',
+      title: navigation.state.params.header || '',
       headerTitleStyle: {
         textAlign: 'center',
         flexGrow: 1,
@@ -41,15 +42,15 @@ class Note extends Component {
       headerRight: (
         // <CheckButton/>
         <TouchableOpacity
-          onPress={() =>
-            params.header == 'ADD NOTE'
-              ? params.addNote()
-              : params.header == 'EDIT NOTE'
-              ? navigation.getParam('saveNote')()
+          onPress={
+            navigation.state.params.header == 'ADD NOTE'
+              ? navigation.getParam('addNote')
+              : navigation.state.params.header == 'EDIT NOTE'
+              ? navigation.getParam('addNote')
               : alert('nothing')
           }>
           <Image
-            // source={require('../Assets/images/checked.png')}
+            source={require('../Assets/images/checked.png')}
             style={{height: 25, width: 25, marginRight: 17}}
           />
         </TouchableOpacity>
@@ -65,6 +66,7 @@ class Note extends Component {
   componentDidMount() {
     this.getData();
     this.getDataCategory();
+    this.props.navigation.setParams({addNote: this.addNote});
   }
 
   getData = (search, sort) => {
@@ -82,11 +84,10 @@ class Note extends Component {
   addNote = () => {
     const title = this.state.title;
     const note = this.state.note;
-    const category = this.state.categoryId;
-
-    if (this.state.text !== '' || category !== '') {
+    const id_category = this.state.categoryId;
+    if (this.state.text !== '' || id_category !== '') {
       //this.props.addNote({ title, note, categoryId })
-      this.props.dispatch(addNote({title, note, category}));
+      this.props.dispatch(addNote({title, note, id_category}));
       this.props.navigation.pop();
     } else {
       alert(category);
@@ -95,7 +96,7 @@ class Note extends Component {
   };
   render() {
     return (
-      <ScrollView>
+      <ScrollView style={{backgroundColor: 'red'}}>
         <View style={{paddingTop: 15}}>
           <TextInput
             style={{

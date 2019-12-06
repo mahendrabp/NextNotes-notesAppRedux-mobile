@@ -42,7 +42,7 @@ export const getNotesById = id => {
 export const addNote = data => {
   return {
     type: 'ADD_NOTE',
-    payload: axios.patch(`localhost:8002/api/v1/notes`, data),
+    payload: axios.post(`http://localhost:8002/api/v1/notes`, data),
   };
 };
 

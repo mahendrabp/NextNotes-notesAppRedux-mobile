@@ -107,16 +107,17 @@ class Home extends Component {
     <View>
       <TouchableOpacity
         delayLongPress={300}
-        onPress={() =>
-          this.props.navigation.navigate('Note', {
-            header: 'EDIT NOTE',
-            title: item.title,
-            note: item.note,
-            categoryId: item.idCategory,
-            id: item.noteId,
-          })
-        }
-        onLongPress={() => this.deleteNote(item.noteId)}>
+        // onPress={() =>
+        //   this.props.navigation.navigate('Note', {
+        //     header: 'EDIT NOTE',
+        //     title: item.title,
+        //     note: item.note,
+        //     categoryId: item.idCategory,
+        //     id: item.noteId,
+        //   })
+        // }
+        // onLongPress={() => this.deleteNote(item.noteId)}
+      >
         <Card
           key={item.noteId}
           containerStyle={{
