@@ -100,6 +100,55 @@ const notes = (state = initialState, action) => {
         isLoading: false,
       };
 
+    case 'EDIT_NOTE_PENDING':
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case 'EDIT_NOTE_FULFILLED':
+      // console.log(action.payload.data.data[0]);
+      return {
+        ...state,
+        isLoading: false,
+        notes: state.notes.map(note =>
+          note.noteId == action.payload.data.data[0].noteId
+            ? action.payload.data.data[0]
+            : note,
+        ),
+      };
+    case 'EDIT_NOTE_REJECTED':
+      return {
+        ...state,
+        isLoading: false,
+      };
+
+    case 'DELETE_NOTE_PENDING':
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case 'DELETE_NOTE_FULFILLED':
+      // console.log(action.payload.data.data.noteId);
+      return {
+        ...state,
+        isLoading: false,
+        // notes: state.notes.filter(
+        //   note => note.noteId !== action.payload.data.data.noteId,
+        // ),
+        notes: state.notes.filter(i => i.noteId !== action.id),
+      };
+    case 'DELETE_NOTE_REJECTED':
+      return {
+        ...state,
+        isLoading: false,
+      };
+
+    case 'CHANGE_SORT':
+      return {
+        ...state,
+        sorted: action.sort,
+      };
+
     default:
       return state;
   }

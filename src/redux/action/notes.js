@@ -45,10 +45,23 @@ export const addNote = data => {
     payload: axios.post(`http://localhost:8002/api/v1/notes`, data),
   };
 };
+export const editNote = (id, data) => {
+  return {
+    type: 'EDIT_NOTE',
+    payload: axios.patch(`http://localhost:8002/api/v1/notes/${id}`, data),
+  };
+};
 
 export const deleteNote = id => {
   return {
     type: 'DELETE_NOTE',
-    payload: axios.delete(`localhost:8002/api/v1/notes/${id}`),
+    payload: axios.delete(`http://localhost:8002/api/v1/notes/${id}`),
+  };
+};
+
+export const changeSort = sort => {
+  return {
+    type: 'CHANGE_SORT',
+    sort: sort,
   };
 };

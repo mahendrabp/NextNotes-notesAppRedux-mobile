@@ -10,7 +10,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {getNotes, addNote} from '../redux/action/notes';
+import {getNotes, addNote, editNote} from '../redux/action/notes';
 import {getCategory} from '../redux/action/category';
 
 class Note extends Component {
@@ -20,13 +20,14 @@ class Note extends Component {
       header: this.props.navigation.state.params.header,
       title: this.props.navigation.state.params.title,
       note: this.props.navigation.state.params.note,
-      categoryId: this.props.navigation.state.params.categoryId || 1,
+      categoryId: this.props.navigation.state.params.categoryId || 5,
       id: this.props.navigation.state.params.id,
     };
   }
 
   static navigationOptions = ({navigation}) => {
-    console.log(navigation.state.params);
+    // console.log(navigation.state.params);
+    console.log(navigation.state.params.header);
     // const {
     //   state: {params = {}},
     // } = navigation;
@@ -42,13 +43,25 @@ class Note extends Component {
       headerRight: (
         // <CheckButton/>
         <TouchableOpacity
-          onPress={
-            navigation.state.params.header == 'ADD NOTE'
-              ? navigation.getParam('addNote')
-              : navigation.state.params.header == 'EDIT NOTE'
-              ? navigation.getParam('addNote')
-              : alert('nothing')
-          }>
+          // onPress={
+          // navigation.state.params.header == 'ADD NOTE'
+          //     ? navigation.getParam('addNote')
+          //     : navigation.getParam('editNote')
+          // }>
+          // onPress={() =>
+          //   navigation.state.params.header == 'ADD NOTE'
+          //     ? navigation.getParam('addNote')
+          //     : navigation.state.params.header == 'EDIT NOTE'
+          //     ? navigation.getParam('editNote')
+          //     : alert('nothing')
+          // }>
+          onPress={() => {
+            if (navigation.state.params.header == 'ADD NOTE') {
+              navigation.state.params.addNote();
+            } else {
+              navigation.state.params.editNote();
+            }
+          }}>
           <Image
             source={require('../Assets/images/checked.png')}
             style={{height: 25, width: 25, marginRight: 17}}
@@ -66,7 +79,21 @@ class Note extends Component {
   componentDidMount() {
     this.getData();
     this.getDataCategory();
-    this.props.navigation.setParams({addNote: this.addNote});
+    // this.props.navigation.setParams({addNote: this.addNote});
+    // this.props.navigation.setParams({editNote: this.editNote});
+    if (this.state.header == 'ADD NOTE') {
+      this.props.navigation.setParams({
+        addNote: this.addNote,
+      });
+    } else {
+      this.props.navigation.setParams({
+        editNote: this.editNote,
+      });
+      const {navigation} = this.props;
+      const id = navigation.getParam('id');
+      const note = navigation.getParam('note');
+      this.setState({id, note});
+    }
   }
 
   getData = (search, sort) => {
@@ -94,9 +121,24 @@ class Note extends Component {
       this.props.navigation.pop();
     }
   };
+
+  editNote = () => {
+    const note = this.state.note;
+    const id = this.state.id;
+    const id_category = this.state.categoryId;
+    const title = this.state.title;
+
+    // if (this.state.text !== '') {
+    //if (this.state.changed) {
+    this.props.dispatch(editNote(id, {title, note, id_category}));
+    this.props.navigation.pop();
+    //}// else {
+    //   this.props.navigation.pop();
+    //}
+  };
   render() {
     return (
-      <ScrollView style={{backgroundColor: 'red'}}>
+      <ScrollView style={{backgroundColor: 'white'}}>
         <View style={{paddingTop: 15}}>
           <TextInput
             style={{

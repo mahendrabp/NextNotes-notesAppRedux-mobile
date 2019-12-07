@@ -25,8 +25,15 @@ import {throttle, debounce} from 'throttle-debounce';
 import {FloatingAction} from 'react-native-floating-action';
 import moment from 'moment';
 import {connect} from 'react-redux';
-import {getNotes, getMoreNotes, getSearchNotes} from '../redux/action/notes';
+import {
+  getNotes,
+  getMoreNotes,
+  getSearchNotes,
+  deleteNote,
+} from '../redux/action/notes';
 import {getCategory} from '../redux/action/category';
+import HeaderLeftBtn from '../Components/HeaderLeftBtn';
+import HeaderRightBtn from '../Components/HeaderRightBtn';
 
 class Home extends Component {
   constructor(props) {
@@ -52,8 +59,8 @@ class Home extends Component {
         alignSelf: 'center',
         fontSize: 14,
       },
-      //   headerRight: <HeaderRightButton />,
-      //   headerLeft: <HeaderLeftButton />,
+      headerRight: <HeaderRightBtn />,
+      headerLeft: <HeaderLeftBtn />,
     };
   };
 
@@ -95,7 +102,6 @@ class Home extends Component {
     // console.log(this.props.notes.selectedCategory);
     if (this.props.notes.currentPage < this.props.notes.totalPage) {
       //this.state.page=this.state.page + 1;
-
       this.getMoreData(
         this.props.notes.searchKeyword,
         this.props.notes.currentPage + 1,
@@ -105,21 +111,44 @@ class Home extends Component {
     }
   };
 
+  deleteNote = id => {
+    Alert.alert(
+      'Delete Note',
+      'Are you sure want to delete note?',
+      [
+        {
+          text: 'NO',
+          onPress: () => {},
+        },
+        {
+          text: 'YES',
+          onPress: () => {
+            if (id !== '') {
+              //  console.log(ids);
+              this.props.dispatch(deleteNote(id));
+              this.getData();
+            }
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
   renderItem = ({item, index}) => (
     <View>
       <TouchableOpacity
-        delayLongPress={300}
-        // onPress={() =>
-        //   this.props.navigation.navigate('Note', {
-        //     header: 'EDIT NOTE',
-        //     title: item.title,
-        //     note: item.note,
-        //     categoryId: item.idCategory,
-        //     id: item.noteId,
-        //   })
-        // }
-        // onLongPress={() => this.deleteNote(item.noteId)}
-      >
+        delayLongPress={500}
+        onPress={() =>
+          this.props.navigation.navigate('Note', {
+            header: 'EDIT NOTE',
+            title: item.title,
+            note: item.note,
+            categoryId: item.idCategory,
+            id: item.noteId,
+          })
+        }
+        onLongPress={() => this.deleteNote(item.noteId)}>
         <Card
           key={item.noteId}
           containerStyle={{
@@ -169,7 +198,7 @@ class Home extends Component {
     </View>
   );
 
-  _keyExtractor = (item, index) => item.noteId.toString();
+  _keyExtractor = (item, index) => item.noteId;
   render() {
     console.log(this.props.notes.notes);
     const {search} = this.state;
@@ -184,7 +213,7 @@ class Home extends Component {
           paddingBottom: 5,
           flexDirection: 'column',
           fontFamily: 'openSans',
-          backgroundColor: 'red',
+          backgroundColor: 'white',
         }}>
         <SearchBar
           placeholder="Cari..."
